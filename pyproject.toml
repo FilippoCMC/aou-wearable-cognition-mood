@@ -1,0 +1,54 @@
+[project]
+name = "aou-wearable-cognition-mood"
+version = "0.1"
+authors = [
+    { name="Filippo Corponi", email="f.corponi@imperial.ac.uk" },
+]
+description = "Domain-Specific Cognitive Impairment and Rest-Activity Phenotypes in Interepisode Mood Disorders"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12,<3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+keywords = ["All of Us", "wearables", "Fitbit", "cognition", "depression", "bipolar disorder"]
+# Versions match the Verily Workbench Jupyter image (Python 3.12.13) the analysis runs on.
+# duckdb and pgeocode are not in that image; their exact versions are fixed in uv.lock.
+#
+# Also required, but not installable from PyPI: the `gsutil` and `wb` CLIs, both provided
+# by the Verily Workbench image. src/utils.py calls `wb resource list` at import time to
+# resolve the workspace's BigQuery dataset and GCS buckets.
+dependencies = [
+    # Analysis
+    "numpy==2.4.3",
+    "pandas==2.3.3",
+    "scipy==1.17.1",
+    "statsmodels==0.14.6",
+    "patsy==1.0.2",
+    "tqdm==4.67.3",
+    # Figures (05_summary)
+    "matplotlib==3.10.8",
+    "seaborn==0.13.2",
+    # BigQuery and GCS I/O
+    "google-cloud-bigquery==3.41.0",
+    "db-dtypes==1.4.3",          # DATE/TIME columns in BigQuery results
+    "pyarrow==23.0.1",           # parquet
+    "gcsfs==2026.2.0",           # 00_build_cache verification
+    "duckdb",                    # wearable cache reads (src/wearables_cache)
+    # ZIP3 -> latitude (02_covariates). pgeocode downloads the GeoNames US table on first
+    # use, so latitudes can change if GeoNames is updated.
+    "pgeocode",
+]
+
+[dependency-groups]
+# Synced by default: the Jupyter kernel the notebooks run in, and papermill for the
+# headless runner in scripts/ (see README).
+dev = [
+    "ipykernel",
+    "papermill",
+]
+
+[tool.uv]
+# Notebooks import src/ from the repository root; the project itself is not installed.
+package = false

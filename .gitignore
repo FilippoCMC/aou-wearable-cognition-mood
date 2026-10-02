@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+
+# Local outputs and run logs (aggregate results stay on the workbench)
+res/
+logs/
+
+# Data must never be committed
+*.parquet
+*.csv
+
+.DS_Store
+.vscode/
+.idea/
